@@ -1,0 +1,12 @@
+path: C:\\Users\\Zaïneb\\Desktop\\olivedetection_\\path
+train: C:\\Users\\Zaïneb\\Desktop\\olivedetection_\\path\\images\\train
+val: C:\\Users\\Zaïneb\\Desktop\\olivedetection_\\path\\images\\train
+names:
+  0: Kus_Gozu_Mantari(Fly Agaric Mushroom)
+  1: Pas_Akari(Foot Candle)
+  2: Saglikli(Healthy)
+
+
+
+
+

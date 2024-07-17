@@ -1,0 +1,54 @@
+import cv2
+import numpy as np
+from tensorflow.keras.models import load_model
+
+# Charger le modèle
+model_path = 'C:\\Users\\Zaïneb\\Desktop\\olivedetection_\\runs\detect\\train\weights\\best.pt'
+model = load_model(model_path)
+
+# Fonction de prétraitement
+def preprocess_image(image):
+    image = cv2.resize(image, (224, 224))  # redimensionner l'image à la taille d'entrée du modèle
+    image = image.astype('float32') / 255.0  # normaliser les pixels
+    image = np.expand_dims(image, axis=0)  # ajouter une dimension pour le batch
+    return image
+
+# Initialiser la capture vidéo
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("Erreur: Impossible d'ouvrir la caméra")
+    exit()
+
+while True:
+    # Lire une image de la caméra
+    ret, frame = cap.read()
+    
+    if not ret:
+        print("Erreur: Impossible de lire l'image")
+        break
+    
+    # Prétraiter l'image
+    preprocessed_frame = preprocess_image(frame)
+    
+    # Faire la prédiction
+    predictions = model.predict(preprocessed_frame)
+    predicted_class = np.argmax(predictions, axis=1)
+    
+    # Définir les classes de maladies (ajustez les noms selon votre modèle)
+    classes = ['Kus_Gozu_Mantari(Fly Agaric Mushroom)', 'Pas_Akari(Foot Candle)', 'DSaglikli(Healthy)']
+    
+    # Annoter l'image avec le résultat
+    cv2.putText(frame, f'Prediction: {classes[predicted_class[0]]}', (10, 30), 
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+    
+    # Afficher l'image
+    cv2.imshow('Olive Leaf Disease Detection', frame)
+    
+    # Quitter la boucle quand 'q' est pressé
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Libérer la capture vidéo et fermer les fenêtres
+cap.release()
+cv2.destroyAllWindows()
